@@ -1,10 +1,14 @@
 services:
   php:
+    env_file:
+      - ./src/.env
     build: ./docker/php
     volumes:
       - ./src:/var/www
 
   web:
+    env_file:
+      - ./src/.env
     image: nginx:1.20-alpine
     ports:
       - 8080:80
@@ -13,9 +17,17 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     working_dir: /var/www
   db:
+    env_file:
+      - ./src/.env
     build: ./docker/mysql
     volumes:
       - db-store:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${TZ}
     ports:
       - "3306:3306"
 
