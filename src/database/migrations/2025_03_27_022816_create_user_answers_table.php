@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('dtb_user_answers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('question_id');
-            $table->foreignId('choice_id');
+            $table->foreignId('long_question_id');
+            $table->foreignId('word_question_id');
             $table->boolean('is_correct')->default(0);
             $table->timestamps();
             $table->softDeletes();

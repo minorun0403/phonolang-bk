@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('dtb_word_questions', function (Blueprint $table) {
             $table->id();
-            $table->string('word');
             $table->foreignId('language_id');
+            $table->foreignId('lesson_id');
+            $table->string('word');
             $table->timestamps();
             $table->softDeletes();
         });

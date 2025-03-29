@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('lesson_id');
+            $table->float('score');
             $table->timestamp('completed_at')->useCurrent();
             $table->timestamps();
             $table->softDeletes();

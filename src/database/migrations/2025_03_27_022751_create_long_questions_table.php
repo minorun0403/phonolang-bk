@@ -15,12 +15,11 @@ return new class extends Migration
     {
         Schema::create('dtb_long_questions', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('content');
-            $table->string('audio_path')->nullable();
-            $table->smallInteger('correct_choice_id');
             $table->foreignId('language_id');
-            $table->tinyInteger('question_type');
+            $table->foreignId('lesson_id');
+            $table->string('title');
+            $table->string('content');
+            $table->string('audio_path')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

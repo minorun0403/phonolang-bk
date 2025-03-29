@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('dtb_users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->unique();
+            $table->string('remember_token')->nullable();
             $table->integer('points')->default(0);
             $table->timestamps();
             $table->softDeletes();
