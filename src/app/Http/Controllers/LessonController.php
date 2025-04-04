@@ -3,9 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repositories\RepositoryInterfaces\QuestionRepositoryInterface;
 
 class LessonController extends Controller
 {
+
+    protected $questionRepo;
+
+    public function __construct(QuestionRepositoryInterface $questionRepo)
+    {
+        $this->questionRepo = $questionRepo;
+    }
+
     public function entryPoint()
     {
         $total_questions = 12;
