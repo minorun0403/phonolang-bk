@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('dtb_choices', function (Blueprint $table) {
+        Schema::create('dtb_word_choices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('long_question_id');
             $table->foreignId('word_question_id');
             $table->string('text');
+            $table->boolean('is_correct');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dtb_choices');
+        Schema::dropIfExists('dtb_word_choices');
     }
 };

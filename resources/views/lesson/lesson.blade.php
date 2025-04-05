@@ -28,6 +28,7 @@
 
                 <!-- 問題番号、正解数、正解率 -->
                 <div class="mb-6 text-center">
+                    {{$questions}}<br>
                     <p class="text-lg">●●問目</p>
                     <p class="text-sm text-gray-600">正解数: 3 / 10　　正解率: 30%</p>
                     <div class="border-t border-gray-300 my-4"></div>

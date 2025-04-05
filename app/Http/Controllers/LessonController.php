@@ -8,20 +8,24 @@ use App\Repositories\RepositoryInterfaces\QuestionRepositoryInterface;
 class LessonController extends Controller
 {
 
-    protected $questionRepo;
+    protected $word_question_repo;
+    // protected $word_choice_repo;
 
-    public function __construct(QuestionRepositoryInterface $questionRepo)
+    public function __construct(QuestionRepositoryInterface $word_question_repo)
     {
-        $this->questionRepo = $questionRepo;
+        $this->word_question_repo = $word_question_repo;
+        // $this->word_choice_repo = $word_choice_repo;
     }
 
     public function entryPoint()
     {
         $total_questions = 12;
         $lesson_id = 1;
-        $question_no = 1;
+        $language_id = 1;
+        $questions = $this->word_question_repo->getQuestionsByLessonIdAndQuestionId($lesson_id, $language_id)->pluck('word');
+        // $choices = $this->word_choice_repo->getChoicesByWordQuestionId($word_question_id)->pluck('text', 'is_correct');
 
-        return view("lesson.lesson", compact('lesson_id', 'question_no'));
+        return view("lesson.lesson", compact('questions'));
     }
 
     // 2問目以降用

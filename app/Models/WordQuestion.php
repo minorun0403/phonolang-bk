@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Question extends Model
+class WordQuestion extends Model
 {
     use HasFactory;
 
@@ -29,13 +29,13 @@ class Question extends Model
     ];
 
     // 例：Lessonとのリレーション（belongsTo）
-    public function lesson()
-    {
-        return $this->belongsTo(Lesson::class);
-    }
+    // public function lesson()
+    // {
+    //     return $this->belongsTo(Lesson::class);
+    // }
 
-    public function language()
-    {
-        return $this->belongsTo(Language::class);
-    }
+    // public function language()
+    // {
+    //     return $this->belongsTo(Language::class);
+    // }
 }
