@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WordQuestion extends Model
+class WordMeaning extends Model
 {
     use HasFactory;
 
     // 対応するテーブル名
-    protected $table = 'dtb_word_questions';
+    protected $table = 'dtb_word_meanings';
     // 主キー
     protected $primaryKey = 'id';
     // タイムスタンプの自動管理
@@ -19,19 +19,18 @@ class WordQuestion extends Model
     // ホワイトリスト形式で、代入を許可するカラム
     protected $fillable = [
         'id',
+        'word_id',
         'language_id',
-        'lesson_id',
-        'word',
+        'meaning',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
-    // 例：Lessonとのリレーション（belongsTo）
-    // public function lesson()
-    // {
-    //     return $this->belongsTo(Lesson::class);
-    // }
+    public function WordQuestion()
+    {
+        return $this->belongsTo(WordQuestion::class, 'word_id', 'id');
+    }
 
     // public function language()
     // {

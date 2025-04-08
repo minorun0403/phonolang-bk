@@ -28,8 +28,7 @@
 
                 <!-- 問題番号、正解数、正解率 -->
                 <div class="mb-6 text-center">
-                    {{$questions}}<br>
-                    <p class="text-lg">●●問目</p>
+                    <p class="text-lg">{{$question_no}}問目</p>
                     <p class="text-sm text-gray-600">正解数: 3 / 10　　正解率: 30%</p>
                     <div class="border-t border-gray-300 my-4"></div>
                 </div>
@@ -38,7 +37,7 @@
                     <!-- クイズの単語 -->
                     <div class="text-center mb-6">
                         <p class="text-xl font-bold mb-2">apple</p>
-                        <p class="text-gray-600">この単語の意味はどれですか？</p>
+                        <p class="text-gray-600">この単語の意味はどれ？</p>
                     </div>
 
                     <!-- 選択肢 -->
@@ -85,8 +84,8 @@
     </div>
     <script>
         $(document).on('click', '.question-action', function() {
-            let lessonId = $(this).data('lesson');
-            let questionNo = $(this).data('question');
+            let lessonId = $(this).data('lesson_id');
+            let questionNo = $(this).data('question_no');
             let selectedAnswer = $("input[name='answer']:checked").val();
         
             $.post(`/lesson/${lessonId}/answer/${questionNo}`, {

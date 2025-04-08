@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('password')->unique();
             $table->string('remember_token')->nullable();
             $table->integer('points')->default(0);
+            $table->integer('lesson_language_id');
+            $table->integer('user_language_id');
             $table->timestamps();
             $table->softDeletes();
         });
