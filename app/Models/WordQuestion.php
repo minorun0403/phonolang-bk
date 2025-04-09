@@ -9,14 +9,10 @@ class WordQuestion extends Model
 {
     use HasFactory;
 
-    // 対応するテーブル名
     protected $table = 'dtb_word_questions';
-    // 主キー
     protected $primaryKey = 'id';
-    // タイムスタンプの自動管理
     public $timestamps = true;
 
-    // ホワイトリスト形式で、代入を許可するカラム
     protected $fillable = [
         'id',
         'language_id',

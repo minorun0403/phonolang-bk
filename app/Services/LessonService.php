@@ -43,10 +43,10 @@ class LessonService
 
         $questions = $this->word_question_repo->getQuestions($lesson_id, $language_id);
         $question = $questions[$question_no - 1];
-        $question_id = $question->id;
+        $word_question_id = $question->id;
         $question_word = $question->word;
         $lesson_id = $question->lesson_id;
-        return [$question_id, $question_word, $lesson_id];
+        return [$word_question_id, $question_word];
     }
 
     public function getQuestionChoices(int $question_id)
