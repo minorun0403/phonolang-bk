@@ -20,7 +20,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g npm
 
-WORKDIR /var/www/html
+WORKDIR /var/www/phonolang
 
 # npm のキャッシュクリア
 RUN npm cache clean --force

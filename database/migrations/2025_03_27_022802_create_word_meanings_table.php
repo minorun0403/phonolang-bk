@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('word_id');
             $table->foreignId('language_id');
             $table->text('meaning');
+            $table->boolean('is_correct');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -5,29 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WordQuestion extends Model
+class WordMeaning extends Model
 {
     use HasFactory;
 
-    protected $table = 'dtb_word_questions';
+    protected $table = 'dtb_word_meanings';
     protected $primaryKey = 'id';
     public $timestamps = true;
 
     protected $fillable = [
         'id',
+        'word_id',
         'language_id',
-        'lesson_id',
-        'word',
+        'meaning',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
-    // 例：Lessonとのリレーション（belongsTo）
-    // public function lesson()
-    // {
-    //     return $this->belongsTo(Lesson::class);
-    // }
+    public function WordQuestion()
+    {
+        return $this->belongsTo(WordQuestion::class, 'word_id', 'id');
+    }
 
     // public function language()
     // {

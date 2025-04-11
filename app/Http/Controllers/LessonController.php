@@ -3,71 +3,72 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Repositories\RepositoryInterfaces\QuestionRepositoryInterface;
+use App\Services\LessonService;
+// use Illuminate\Support\Facades\Redis;
+use App\Repositories\RepositoryInterfaces\WordQuestionRepositoryInterface;
+use App\Repositories\RepositoryInterfaces\WordChoiceRepositoryInterface;
 
 class LessonController extends Controller
 {
 
     protected $word_question_repo;
-    // protected $word_choice_repo;
+    protected $word_choice_repo;
+    protected $lesson_service;
 
-    public function __construct(QuestionRepositoryInterface $word_question_repo)
+    public function __construct(LessonService $lesson_service, WordQuestionRepositoryInterface $word_question_repo, WordChoiceRepositoryInterface $word_choice_repo)
     {
+        $this->lesson_service = $lesson_service;
         $this->word_question_repo = $word_question_repo;
-        // $this->word_choice_repo = $word_choice_repo;
+        $this->word_choice_repo = $word_choice_repo;
     }
 
-    public function entryPoint()
+    public function entrypoint()
     {
-        $total_questions = 12;
+        session(['question_no' => 0]); //開発用！！！本番は消すこと
+        $this->lesson_service->incrementQuestionNo();
+        if (empty(session('question_no')) || session('question_no') < 5) {
+            return redirect(route('lesson.word'));
+        } elseif (session('question_no') < 9) {
+            return redirect(route('lesson.word'));
+        } else {
+            return redirect(route(''));//リスニング用
+        }
+
+
+    }
+
+    public function wordQuestion()
+    {
         $lesson_id = 1;
-        $language_id = 1;
-        $questions = $this->word_question_repo->getQuestionsByLessonIdAndQuestionId($lesson_id, $language_id)->pluck('word');
-        // $choices = $this->word_choice_repo->getChoicesByWordQuestionId($word_question_id)->pluck('text', 'is_correct');
+        $user_language_id = 2;
+        $progress = 30;
 
-        return view("lesson.lesson", compact('questions'));
+        $question_no = session('question_no') ?? 1; //１問目はセッションが空なので、1を代入
+        [$word_question_id, $question_word] = $this->lesson_service->getQuestionWord($lesson_id, $question_no);//単語問題ID, 問題単語, レッスンID
+        $question_word_meanings =  $this->lesson_service->getQuestionWordMeaning($lesson_id, $user_language_id);//単語問題の意味
+        // $question_choices =  $this->lesson_service->getQuestionChoices($word_question_id);//選択肢
+
+        return view("lesson.lesson", compact('question_word' , 'question_word_meanings', 'question_no', 'lesson_id', 'word_question_id', 'progress'));
     }
 
-    // 2問目以降用
-    // public function next($lesson_id, $question_no)
-    // {
-    //     $total_questions = 9;
 
-    //     if ($question_no >= $total_questions) {
-    //         return response()->json(['status' => 'complete']);
-    //     }
-
-    //     // 次の問題のHTMLを返す
-    //     $next_question_no = $question_no + 1;
-    //     $view = ($next_question_no >= 4 && $next_question_no <= 7) ? 'lesson.part2' : 'lesson.part1';
-        
-    //     $html = view($view, compact('lesson_id', 'next_question_no', 'total_questions'))->render();
-
-    //     return response()->json(['status' => 'success', 'html' => $html]);
-    // }
-
-    public function answer(Request $request, $lesson_id, $question_no)
+    public function answer(Request $request)
     {
-        // Lessonモデルから該当のレッスンを取得
-        // $lesson = Lesson::find($lesson_id);
+        $user_language_id = 2; //開発用
+        $lesson_id = 1; //開発用
+        $user_answer = $request->input('answer');
+        $correct_meaning =  $this->lesson_service->getCorrectdMeaning($lesson_id, $user_language_id);//単語問題の正解
+        $question_word_meanings =  $this->lesson_service->getQuestionWordMeaning($lesson_id, $user_language_id);//単語問題の意味
+        $is_correct = $this->lesson_service->checkCorrect($user_answer, $correct_meaning);
+        // $question_choices =  $this->lesson_service->getQuestionChoices($question_id);//選択肢
 
-        // if (!$lesson || $lesson->isFinished()) {
-        //     return response()->json(['finished' => true]);
-        // }
-
-        // 答え合わせ部分の質問のHTMLを返す
-        // return response()->json([
-        //     'finished' => false,
-        //     'html' => view('lesson.partial.answer')->render()
-        // ]);
-
-        $userAnswer = $request->input('answer');
-    
         return response()->json([
             'finished' => false,
             'html' => view('lesson.partial.answer', [
-                'correct' => false,
-                'userAnswer' => $userAnswer
+                'correct' => $is_correct,
+                'userAnswer' => $user_answer,
+                'question_word_meanings' => $question_word_meanings,
+                'lesson_id' => $lesson_id,
             ])->render()
         ]);
     }
