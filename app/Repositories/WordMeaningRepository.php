@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Repositories\RepositoryInterfaces\WordMeaningRepositoryInterface;
 use App\Models\WordMeaning;
+use League\Flysystem\UnableToGeneratePublicUrl;
 
 class WordMeaningRepository implements WordMeaningRepositoryInterface
 {
@@ -30,5 +31,17 @@ class WordMeaningRepository implements WordMeaningRepositoryInterface
         //             dtb_word_questions.lesson_id = [レッスンID]
         // WHERE
         //     dtb_word_meanings.language_id = [意味の言語ID];
+    }
+
+    public function getCorrectdMeaning(int $lesson_id, int $user_language_id)
+    {
+        return WordMeaning::select('dtb_word_meanings.meaning')
+        ->leftJoin('dtb_word_questions', function ($join) use ($lesson_id) {
+            $join->on('dtb_word_meanings.word_id', '=', 'dtb_word_questions.id')
+                ->where('dtb_word_questions.lesson_id', '=', $lesson_id);
+        })
+        ->where('dtb_word_meanings.language_id', $user_language_id)
+        ->where('dtb_word_meanings.is_correct', 1)
+        ->value('meaning');
     }
 }

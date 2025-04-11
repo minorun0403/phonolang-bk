@@ -24,16 +24,16 @@ class LessonService
     }
 
 
-    public function getQuestionNo()
+    public function incrementQuestionNo()
     {
         if (session('question_no') == null) {
-            $question_id = 1;
+            $question_no = 1;
         }
         else {
-            $question_id = session('question_no') + 1;
+            $question_no = session('question_no') + 1;
         }
-        session(['lesson_id' => $question_id]);
-        return $question_id;
+        session(['question_no' => $question_no]);
+        return $question_no;
     }
 
     public function getQuestionWord(int $lesson_id, int $question_no)
@@ -63,5 +63,21 @@ class LessonService
     {
         $meanig = $this->word_meaning_repo->getWordMeaning($lesson_id, $user_language_id);
         return $meanig;
+    }
+
+    public function getCorrectdMeaning(int $lesson_id, int $user_language_id)
+    {
+        $correct_meaning = $this->word_meaning_repo->getCorrectdMeaning($lesson_id, $user_language_id);
+        return $correct_meaning;
+    }
+
+    public function checkCorrect($user_answer, $correct_meaning)
+    {
+        if ($user_answer == $correct_meaning) {
+            $is_correct = true;
+        } else {
+            $is_correct = false;
+        }
+        return $is_correct;
     }
 }

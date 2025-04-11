@@ -9,16 +9,7 @@
 </head>
 <body class="bg-gray-100">
     <header class="bg-blue-600 text-white p-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">英語の方言クイズ</h1>
-            <nav>
-                <ul class="flex space-x-4">
-                    <li><a href="#" class="hover:underline">ホーム</a></li>
-                    <li><a href="#" class="hover:underline">クイズ一覧</a></li>
-                    <li><a href="#" class="hover:underline">設定</a></li>
-                </ul>
-            </nav>
-        </div>
+
     </header>
 
     <div class="flex min-h-screen">
@@ -55,7 +46,7 @@
                     </div>
                     <div class="flex justify-between p-3">
                         <button button id="skip-button" class="question-action bg-gray-300 text-gray-700 w-[150px] h-[50px] p-3 mt-5 rounded hover:bg-gray-400">戻る</button>
-                        <button button id="answer-button" class="question-action bg-[#FB9CB5] text-white w-[150px] h-[50px] p-3 mt-5 rounded hover:bg-[#F4CAC8]" data-word_question_id="{{ $word_question_id }}">回答する</button>
+                        <button button id="answer-button" class="question-action bg-[#FB9CB5] text-white w-[150px] h-[50px] p-3 mt-5 rounded hover:bg-[#F4CAC8]" data-word_question_id="{{ $word_question_id }}" data-lesson_id="{{ $lesson_id }}">回答する</button>
                     </div>
                 </div>
             </div>
@@ -65,9 +56,8 @@
         $(document).on('click', '.question-action', function() {
             let word_question_id = $(this).data('word_question_id');
             let selectedAnswer = $("input[name='answer']:checked").val();
-            let lesson_id = "1";
 
-            $.post(`/lesson/${lesson_id}/answer/${word_question_id}`, {
+            $.post(`/lesson/word/answer`, {
                 _token: '{{ csrf_token() }}',
                 answer: selectedAnswer
             }, function(data) {
