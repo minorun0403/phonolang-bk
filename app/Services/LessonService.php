@@ -42,11 +42,11 @@ class LessonService
         $language_id = 1;
 
         $questions = $this->word_question_repo->getQuestions($lesson_id, $language_id);
+        $word_question_ids = $questions->pluck('id')->toArray();
         $question = $questions[$question_no - 1];
         $word_question_id = $question->id;
         $question_word = $question->word;
-        $lesson_id = $question->lesson_id;
-        return [$word_question_id, $question_word];
+        return [$word_question_ids, $word_question_id, $question_word];
     }
 
     public function getQuestionChoices(int $question_id)
@@ -59,10 +59,10 @@ class LessonService
         return $choices;
     }
 
-    public function getQuestionWordMeaning(int $lesson_id, int $user_language_id)
+    public function getQuestionWordMeaning($word_question_ids, int $lesson_id, int $user_language_id)
     {
-        $meanig = $this->word_meaning_repo->getWordMeaning($lesson_id, $user_language_id);
-        return $meanig;
+        $meanigs = $this->word_meaning_repo->getWordMeaning($word_question_ids, $lesson_id, $user_language_id);
+        return $meanigs;
     }
 
     public function getCorrectdMeaning(int $lesson_id, int $user_language_id)
@@ -71,12 +71,14 @@ class LessonService
         return $correct_meaning;
     }
 
-    public function checkCorrect($user_answer, $correct_meaning)
+    public function checkCorrect($user_answer, $correct)
     {
-        if ($user_answer == $correct_meaning) {
-            $is_correct = true;
+        $true = 1;
+        $false = 0;
+        if ($user_answer == $correct) {
+            $is_correct = $true;
         } else {
-            $is_correct = false;
+            $is_correct = $false;
         }
         return $is_correct;
     }
