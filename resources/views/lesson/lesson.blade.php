@@ -35,10 +35,10 @@
                 <div id="lesson-content">
                     <!-- 選択肢 -->
                     <div class="space-y-4">
-                        @foreach($question_word_meanings as $index => $meaning)
+                        @foreach($meanings as $index => $meaning)
                             <div class="relative">
-                            <input type="radio" id="choice{{ $index + 1 }}" name="answer" value="{{ $meaning }}" class="hidden peer">
-                            <label for="choice{{ $index + 1 }}"  class="block cursor-pointer p-4 border-2 border-gray-300 rounded-lg shadow-lg peer-checked:bg-blue-100 peer-checked:border-blue-500 hover:bg-blue-50 transition">                            
+                            <input type="radio" id="choice{{ $index }}" name="answer" value="{{ $index }}" class="hidden peer">
+                            <label for="choice{{ $index }}"  class="block cursor-pointer p-4 border-2 border-gray-300 rounded-lg shadow-lg peer-checked:bg-blue-100 peer-checked:border-blue-500 hover:bg-blue-50 transition">                            
                                     <p class="text-lg">{{ $meaning }}</p>
                                 </label>
                             </div>
@@ -46,7 +46,7 @@
                     </div>
                     <div class="flex justify-between p-3">
                         <button button id="skip-button" class="question-action bg-gray-300 text-gray-700 w-[150px] h-[50px] p-3 mt-5 rounded hover:bg-gray-400">戻る</button>
-                        <button button id="answer-button" class="question-action bg-[#FB9CB5] text-white w-[150px] h-[50px] p-3 mt-5 rounded hover:bg-[#F4CAC8]" data-word_question_id="{{ $word_question_id }}" data-lesson_id="{{ $lesson_id }}">回答する</button>
+                        <button button id="answer-button" class="question-action bg-[#FB9CB5] text-white w-[150px] h-[50px] p-3 mt-5 rounded hover:bg-[#F4CAC8]">回答する</button>
                     </div>
                 </div>
             </div>
@@ -54,11 +54,12 @@
     </div>
     <script>
         $(document).on('click', '.question-action', function() {
-            let word_question_id = $(this).data('word_question_id');
             let selectedAnswer = $("input[name='answer']:checked").val();
 
             $.post(`/lesson/word/answer`, {
                 _token: '{{ csrf_token() }}',
+                correct: '{{ $word_question_id }}',
+                meanings: @json($meanings),
                 answer: selectedAnswer
             }, function(data) {
                 // サーバーからのレスポンスを処理

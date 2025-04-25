@@ -1,8 +1,8 @@
-<div class="space-y-4" id="answer-content" data-correct="{{ json_encode($correct) }}" data-useranswer="{{ $userAnswer }}">
-    @foreach($question_word_meanings as $index => $meaning)
+<div class="space-y-4" id="answer-content" data-is_correct="{{ $is_correct }}" data-user_answer="{{ $user_answer }}">
+    @foreach($meanings as $index => $meaning)
         <div class="relative">
-        <input type="radio" id="choice{{ $index + 1 }}" name="answer" value="{{ $meaning }}" class="hidden peer">
-        <label for="choice{{ $index + 1 }}"  class="block cursor-pointer p-4 border-2 border-gray-300 rounded-lg shadow-lg peer-hover:bg-blue-50answer-content">
+        <input type="radio" id="choice{{ $index }}" name="answer" value="{{ $index }}" class="hidden peer">
+        <label for="choice{{ $index }}"  class="block cursor-pointer p-4 border-2 border-gray-300 rounded-lg shadow-lg">                            
                 <p class="text-lg">{{ $meaning }}</p>
             </label>
         </div>
@@ -16,18 +16,15 @@
 
 <script>
     $(document).ready(function () {
-        let correct = $("#answer-content").data("correct");
-        let userAnswer = $("#answer-content").data("useranswer");
+        let is_correct = $("#answer-content").data("is_correct");
+        let userAnswer = $("#answer-content").data("user_answer");
 
         $("#answer-content input").each(function () {
             let choice = $(this);
             let label = choice.next("label");
 
-            // すべての選択肢のスタイルをリセット
-            label.removeClass("bg-green-200 border-green-500 bg-red-200 border-red-500 opacity-50");
-
-            if (choice.val() === userAnswer) {
-                if (correct) {
+            if (choice.val() == userAnswer) {
+                if (is_correct) {
                     label.addClass("bg-green-200 border-green-500"); // 正解: 緑
                 } else {
                     label.addClass("bg-red-200 border-red-500"); // 不正解: 赤
