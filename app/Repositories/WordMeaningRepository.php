@@ -41,7 +41,6 @@ class WordMeaningRepository implements WordMeaningRepositoryInterface
                 ->where('dtb_word_questions.lesson_id', '=', $lesson_id);
         })
         ->where('dtb_word_meanings.language_id', $user_language_id)
-        ->where('dtb_word_meanings.is_correct', 1)
         ->value('meaning');
     }
 }
