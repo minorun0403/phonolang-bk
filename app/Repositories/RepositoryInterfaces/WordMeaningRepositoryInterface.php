@@ -6,4 +6,5 @@ interface WordMeaningRepositoryInterface
 {
     public function getWordMeaning($word_question_ids, int $lesson_id, int $language_id);
     public function getCorrectdMeaning(int $lesson_id, int $language_id);
+    public function getWordMeaningById(int $word_id, int $language_id);
 }

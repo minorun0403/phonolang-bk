@@ -24,12 +24,12 @@ class LessonController extends Controller
 
     public function entrypoint()
     {
-        session(['question_no' => 0]); //開発用！！！本番は消すこと
-        $this->lesson_service->incrementQuestionNo();
+        // session(['question_no' => 0]); //開発用！！！本番は消すこと
+        $this->lesson_service->getQuestionNo();
         if (empty(session('question_no')) || session('question_no') < 5) {
             return redirect(route('lesson.word'));
         } elseif (session('question_no') < 9) {
-            return redirect(route('lesson.word'));
+            return redirect(route('lesson.word.rev'));
         } else {
             return redirect(route(''));//リスニング用
         }
@@ -64,6 +64,37 @@ class LessonController extends Controller
                 'is_correct' => $is_correct,
                 'user_answer' => $user_answer,
                 'meanings' => $meanings,
+            ])->render()
+        ]);
+    }
+
+    public function wordQuestionRev()
+    {
+        $lesson_id = 1;
+        $user_language_id = 2;
+        $progress = 30;
+        $correct_rate = 0;
+        $question_no = session('question_no');
+
+        $choices = $this->lesson_service->getQuestionWordRev($lesson_id);
+        [$question, $word_id] =  $this->lesson_service->getWordMeaningRev($choices, $question_no);
+
+        return view("lesson.word_rev", compact('choices' , 'question', 'correct_rate', 'question_no', 'progress', 'word_id'));
+    }
+
+    public function answerRev(Request $request)
+    {
+        $correct = $request->input('word_id');
+        $user_answer = $request->input('user_answer');
+        $choices = $request->input('choices');
+        $is_correct = $this->lesson_service->checkCorrect($user_answer, $correct);
+
+        return response()->json([
+            'finished' => false,
+            'html' => view('lesson.partial.answer_rev', [
+                'is_correct' => $is_correct,
+                'user_answer' => $user_answer,
+                'choices' => $choices,
             ])->render()
         ]);
     }

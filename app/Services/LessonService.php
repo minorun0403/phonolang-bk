@@ -24,7 +24,7 @@ class LessonService
     }
 
 
-    public function incrementQuestionNo()
+    public function getQuestionNo()
     {
         if (session('question_no') == null) {
             $question_no = 1;
@@ -81,5 +81,23 @@ class LessonService
             $is_correct = $false;
         }
         return $is_correct;
+    }
+
+    public function getQuestionWordRev(int $lesson_id)
+    {
+        // 質問のIDを取得
+        $language_id = 1;
+
+        $questions = $this->word_question_repo->getQuestions($lesson_id, $language_id);
+        $questions = $questions->pluck('word', 'id')->toArray();
+        return $questions;
+    }
+
+    public function getWordMeaningRev($choices, int $question_no)
+    {
+        $user_language_id = 2;
+        $word_id = array_keys($choices)[$question_no - 5];
+        $question = $this->word_meaning_repo->getWordMeaningById($word_id, $user_language_id)->meaning;
+        return [$question, $word_id];
     }
 }

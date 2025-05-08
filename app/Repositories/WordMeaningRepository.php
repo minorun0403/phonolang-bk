@@ -43,4 +43,12 @@ class WordMeaningRepository implements WordMeaningRepositoryInterface
         ->where('dtb_word_meanings.language_id', $user_language_id)
         ->value('meaning');
     }
+
+    public function getWordMeaningById(int $word_id, int $user_language_id)
+    {
+        return WordMeaning::select('meaning')
+        ->where('word_id', $word_id)
+        ->where('language_id', $user_language_id)
+        ->first();
+    }
 }
