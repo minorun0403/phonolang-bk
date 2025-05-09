@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('email')->unique();
-            $table->string('password')->unique();
+            $table->string('password');
             $table->string('remember_token')->nullable();
-            $table->integer('points')->default(0);
-            $table->integer('lesson_language_id');
-            $table->integer('user_language_id');
+            $table->bigInteger('points')->default(0);
+            $table->bigInteger('lesson_language_id');
+            $table->bigInteger('user_language_id');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('dtb_word_choices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('word_question_id');
+            $table->foreignId('word_question_id')->constrained('dtb_word_questions')->onDelete('cascade');
             $table->string('text');
             $table->boolean('is_correct');
             $table->timestamps();

@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('dtb_lessons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('language_id');
+            $table->foreignId('language_id')->constrained('mtb_languages');
             $table->string('title');
-            $table->tinyInteger('level');
+            $table->smallInteger('level');
             $table->timestamps();
             $table->softDeletes();
         });
