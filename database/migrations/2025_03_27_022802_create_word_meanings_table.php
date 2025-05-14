@@ -15,10 +15,9 @@ return new class extends Migration
     {
         Schema::create('dtb_word_meanings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('word_id');
-            $table->foreignId('language_id');
+            $table->foreignId('word_id')->constrained('dtb_word_questions')->onDelete('cascade');
+            $table->foreignId('language_id')->constrained('mtb_languages')->onDelete('cascade');
             $table->text('meaning');
-            $table->boolean('is_correct');
             $table->timestamps();
             $table->softDeletes();
         });

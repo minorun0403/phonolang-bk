@@ -1,9 +1,9 @@
 <div class="space-y-4" id="answer-content" data-is_correct="{{ $is_correct }}" data-user_answer="{{ $user_answer }}">
-    @foreach($meanings as $index => $meaning)
+    @foreach($choices as $index => $choice)
         <div class="relative">
         <input type="radio" id="choice{{ $index }}" name="answer" value="{{ $index }}" class="hidden peer">
-        <label for="choice{{ $index }}"  class="block cursor-pointer p-4 border-2 border-gray-300 rounded-lg shadow-lg">                            
-                <p class="text-lg">{{ $meaning }}</p>
+        <label for="choice{{ $index }}"  class="block cursor-pointer p-4 border-2 border-gray-300 rounded-lg shadow-lg">
+                <p class="text-lg text-center">{{ $choice }}</p>
             </label>
         </div>
     @endforeach
@@ -17,15 +17,15 @@
 <script>
     $(document).ready(function () {
         let is_correct = $("#answer-content").data("is_correct");
-        let userAnswer = $("#answer-content").data("user_answer");
+        let user_answer = $("#answer-content").data("user_answer");
 
         $("#answer-content input").each(function () {
             let choice = $(this);
             let label = choice.next("label");
 
-            if (choice.val() == userAnswer) {
+            if (choice.val() == user_answer) {
                 if (is_correct) {
-                    label.addClass("bg-green-200 border-green-500"); // 正解: 緑
+                    label.addClass("bg-green-200 border-green-500"); // 正解:
                 } else {
                     label.addClass("bg-red-200 border-red-500"); // 不正解: 赤
                 }
@@ -36,7 +36,6 @@
     });
 
     document.getElementById('next-button').addEventListener('click', function () {
-        // Laravelのroute関数でURLを埋め込む
         window.location.href = "{{ route('lesson.entrypoint') }}";
     });
 </script>

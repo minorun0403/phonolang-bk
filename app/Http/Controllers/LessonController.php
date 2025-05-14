@@ -22,19 +22,52 @@ class LessonController extends Controller
         $this->word_choice_repo = $word_choice_repo;
     }
 
+    public function index()
+    {
+        $lessons = [
+            [
+                'category' => '学習レッスン',
+                'title' => 'HTML & CSS 初級編',
+                'status' => 'completed',
+                'icon' => '📘',
+            ],
+            [
+                'category' => '学習レッスン',
+                'title' => 'HTML & CSS 中級編',
+                'status' => 'completed',
+                'icon' => '📘',
+            ],
+            [
+                'category' => '',
+                'title' => '検証ツールの使い方',
+                'status' => 'in_progress',
+                'progress' => 20,
+                'progress_label' => '1/5セクション',
+                'icon' => '🧪',
+            ],
+            [
+                'category' => '道場レッスン',
+                'title' => 'HTML & CSS 初級編',
+                'status' => 'locked',
+                'progress' => 0,
+                'progress_label' => '0/19ページ',
+                'icon' => '📗',
+            ]
+        ];
+        return view('lesson.top', compact('lessons'));
+    }
+
     public function entrypoint()
     {
-        session(['question_no' => 0]); //開発用！！！本番は消すこと
-        $this->lesson_service->incrementQuestionNo();
+        // session(['question_no' => 0]); //開発用！！！本番は消すこと
+        $this->lesson_service->getQuestionNo();
         if (empty(session('question_no')) || session('question_no') < 5) {
             return redirect(route('lesson.word'));
         } elseif (session('question_no') < 9) {
-            return redirect(route('lesson.word'));
+            return redirect(route('lesson.word.rev'));
         } else {
             return redirect(route(''));//リスニング用
         }
-
-
     }
 
     public function wordQuestion()
@@ -44,31 +77,57 @@ class LessonController extends Controller
         $progress = 30;
 
         $question_no = session('question_no') ?? 1; //１問目はセッションが空なので、1を代入
-        [$word_question_id, $question_word] = $this->lesson_service->getQuestionWord($lesson_id, $question_no);//単語問題ID, 問題単語, レッスンID
-        $question_word_meanings =  $this->lesson_service->getQuestionWordMeaning($lesson_id, $user_language_id);//単語問題の意味
+        [$word_question_ids, $word_question_id, $question_word] = $this->lesson_service->getQuestionWord($lesson_id, $question_no);//単語問題ID, 問題単語, レッスンID
+        $meanings =  $this->lesson_service->getQuestionWordMeaning($word_question_ids, $lesson_id, $user_language_id)->pluck('meaning', 'word_id')->toArray();;//単語問題の意味
         // $question_choices =  $this->lesson_service->getQuestionChoices($word_question_id);//選択肢
 
-        return view("lesson.lesson", compact('question_word' , 'question_word_meanings', 'question_no', 'lesson_id', 'word_question_id', 'progress'));
+        return view("lesson.lesson", compact('question_word' , 'meanings', 'question_no', 'word_question_id', 'progress'));
     }
 
 
     public function answer(Request $request)
     {
-        $user_language_id = 2; //開発用
-        $lesson_id = 1; //開発用
         $user_answer = $request->input('answer');
-        $correct_meaning =  $this->lesson_service->getCorrectdMeaning($lesson_id, $user_language_id);//単語問題の正解
-        $question_word_meanings =  $this->lesson_service->getQuestionWordMeaning($lesson_id, $user_language_id);//単語問題の意味
-        $is_correct = $this->lesson_service->checkCorrect($user_answer, $correct_meaning);
-        // $question_choices =  $this->lesson_service->getQuestionChoices($question_id);//選択肢
+        $meanings =$request->input('meanings');
+        $is_correct = $this->lesson_service->checkCorrect($user_answer, $request->input('correct'));
 
         return response()->json([
             'finished' => false,
             'html' => view('lesson.partial.answer', [
-                'correct' => $is_correct,
-                'userAnswer' => $user_answer,
-                'question_word_meanings' => $question_word_meanings,
-                'lesson_id' => $lesson_id,
+                'is_correct' => $is_correct,
+                'user_answer' => $user_answer,
+                'meanings' => $meanings,
+            ])->render()
+        ]);
+    }
+
+    public function wordQuestionRev()
+    {
+        $lesson_id = 1;
+        $user_language_id = 2;
+        $progress = 30;
+        $correct_rate = 0;
+        $question_no = session('question_no');
+
+        $choices = $this->lesson_service->getQuestionWordRev($lesson_id);
+        [$question, $word_id] =  $this->lesson_service->getWordMeaningRev($choices, $question_no);
+
+        return view("lesson.word_rev", compact('choices' , 'question', 'correct_rate', 'question_no', 'progress', 'word_id'));
+    }
+
+    public function answerRev(Request $request)
+    {
+        $correct = $request->input('word_id');
+        $user_answer = $request->input('user_answer');
+        $choices = $request->input('choices');
+        $is_correct = $this->lesson_service->checkCorrect($user_answer, $correct);
+
+        return response()->json([
+            'finished' => false,
+            'html' => view('lesson.partial.answer_rev', [
+                'is_correct' => $is_correct,
+                'user_answer' => $user_answer,
+                'choices' => $choices,
             ])->render()
         ]);
     }

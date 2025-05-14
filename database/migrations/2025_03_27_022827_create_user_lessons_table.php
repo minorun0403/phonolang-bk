@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('dtb_user_lessons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->foreignId('lesson_id');
+            $table->foreignId('user_id')->constrained('dtb_users')->onDelete('cascade');
+            $table->foreignId('lesson_id')->constrained('dtb_lessons')->onDelete('cascade');
             $table->float('score');
             $table->timestamp('completed_at')->useCurrent();
             $table->timestamps();

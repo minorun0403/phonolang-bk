@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('dtb_long_questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('language_id');
-            $table->foreignId('lesson_id');
+            $table->foreignId('language_id')->constrained('mtb_languages')->onDelete('cascade');
+            $table->foreignId('lesson_id')->constrained('dtb_lessons')->onDelete('cascade');
             $table->string('title');
             $table->string('content');
             $table->string('audio_path')->nullable();
