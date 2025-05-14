@@ -22,6 +22,41 @@ class LessonController extends Controller
         $this->word_choice_repo = $word_choice_repo;
     }
 
+    public function index()
+    {
+        $lessons = [
+            [
+                'category' => '学習レッスン',
+                'title' => 'HTML & CSS 初級編',
+                'status' => 'completed',
+                'icon' => '📘',
+            ],
+            [
+                'category' => '学習レッスン',
+                'title' => 'HTML & CSS 中級編',
+                'status' => 'completed',
+                'icon' => '📘',
+            ],
+            [
+                'category' => '',
+                'title' => '検証ツールの使い方',
+                'status' => 'in_progress',
+                'progress' => 20,
+                'progress_label' => '1/5セクション',
+                'icon' => '🧪',
+            ],
+            [
+                'category' => '道場レッスン',
+                'title' => 'HTML & CSS 初級編',
+                'status' => 'locked',
+                'progress' => 0,
+                'progress_label' => '0/19ページ',
+                'icon' => '📗',
+            ]
+        ];
+        return view('lesson.top', compact('lessons'));
+    }
+
     public function entrypoint()
     {
         // session(['question_no' => 0]); //開発用！！！本番は消すこと
@@ -33,8 +68,6 @@ class LessonController extends Controller
         } else {
             return redirect(route(''));//リスニング用
         }
-
-
     }
 
     public function wordQuestion()
